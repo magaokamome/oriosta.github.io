@@ -1,0 +1,710 @@
+/* 全体のリセットと基本設定 */
+
+
+
+body {
+
+
+
+margin: 0;
+
+
+
+padding: 20px;
+
+
+
+background-color: #f0f0f0;
+
+
+
+font-family: 'monospace', 'Meiryo', sans-serif; /* 基本フォント */
+
+
+
+display: flex;
+
+
+
+justify-content: center;
+
+
+
+align-items: flex-start;
+
+
+
+min-height: 100vh;
+
+
+
+}
+
+
+
+
+
+
+
+.display-wrapper {
+
+
+
+width: 90%;
+
+
+
+max-width: 800px;
+
+
+
+border: 3px solid #333;
+
+
+
+border-radius: 8px;
+
+
+
+overflow: hidden;
+
+
+
+background-color: #000;
+
+
+
+box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+
+
+
+margin-bottom: 20px;
+
+
+
+}
+
+
+
+
+
+
+
+/* 駅名・路線名・方面表示のヘッダー */
+
+
+
+.station-header {
+
+
+
+background-color: #222;
+
+
+
+color: #fff;
+
+
+
+padding: 10px 0;
+
+
+
+margin: 0;
+
+
+
+font-size: 1.6em; /* この部分のサイズは維持 */
+
+
+
+text-align: center;
+
+
+
+border-bottom: 1px solid #444;
+
+
+
+letter-spacing: 0.05em;
+
+
+
+}
+
+
+
+/* ヘッダーの英語表記（もしあれば。今回はJSONにデータがないので表示されません） */
+
+
+
+.station-header .english-direction {
+
+
+
+display: block;
+
+
+
+font-size: 0.6em;
+
+
+
+color: #aaa;
+
+
+
+margin-top: 2px;
+
+
+
+}
+
+
+
+
+
+
+
+.display-container {
+
+
+
+display: flex;
+
+
+
+flex-direction: column;
+
+
+
+gap: 5px; /* 各電光掲示板間のギャップなのでそのまま */
+
+
+
+padding: 10px;
+
+
+
+background-color: #000;
+
+
+
+}
+
+
+
+
+
+
+
+/* メイン表示エリア全体 */
+
+
+
+#main-display-area {
+
+
+
+display: flex;
+
+
+
+flex-direction: column; /* 列車情報を縦に並べる */
+
+
+
+height: 80px; /* ★修正: 上下の枠の高さを少し小さく (例: 80px) */
+
+
+
+overflow: hidden; /* はみ出た内容を隠す */
+
+
+
+justify-content: center; /* 内容を垂直中央に配置 */
+
+
+
+width: 100%;
+
+
+
+background-color: #000;
+
+
+
+border: 1px solid #333;
+
+
+
+border-radius: 4px;
+
+
+
+padding: 10px; /* 全体のパディング */
+
+
+
+box-sizing: border-box; /* パディングを含めて幅を計算 */
+
+
+
+}
+
+
+
+
+
+
+
+/* 各列車の行 */
+
+
+
+.train-row {
+
+
+
+display: flex; /* 行内の要素を横並びにする */
+
+
+
+align-items: center; /* 垂直方向中央寄せ */
+
+
+
+color: lime; /* 基本の文字色 */
+
+
+
+padding: 0; /* 上下パディングは要素の高さで調整 */
+
+
+
+justify-content: flex-start; /* 全ての要素を左寄せに */
+
+
+
+width: 100%;
+
+
+
+}
+
+
+
+.train-row.no-trains {
+
+
+
+justify-content: flex-start; /* 列車がない場合のメッセージも左寄せ */
+
+
+
+font-size: 1.6em;
+
+
+
+color: #aaa;
+
+
+
+}
+
+
+
+
+
+
+
+/* 各情報要素のスタイル - 全て同じサイズに統一（変更なし） */
+
+
+
+.train-type,
+
+
+
+.train-time,
+
+
+
+.train-destination {
+
+
+
+font-size: 1.8em; /* 文字サイズはそのまま維持 */
+
+
+
+font-weight: bold; /* 全て太字 */
+
+
+
+color: #0f0; /* 基本の色（明るい緑）に統一 */
+
+
+
+}
+
+
+
+
+
+
+
+.train-type {
+
+
+
+color: #0c0; /* 種別のみ少し濃い緑 */
+
+
+
+min-width: 4em; /* 幅を確保して位置を揃える */
+
+
+
+text-align: left; /* 左寄せ */
+
+
+
+margin-right: 15px; /* 右側に余白を追加して隣の要素と区切る */
+
+
+
+}
+
+
+
+.train-time {
+
+
+
+margin-right: 15px; /* 右側に余白を追加して隣の要素と区切る */
+
+
+
+}
+
+
+
+.train-destination {
+
+
+
+flex-grow: 0; /* 残りのスペースを埋めずにコンテンツ幅に合わせる */
+
+
+
+text-align: left; /* 左寄せ */
+
+
+
+}
+
+
+
+.train-delay { /* JSONにdelay情報がないので表示されませんが、スタイルは用意しておきます */
+
+
+
+color: orange;
+
+
+
+font-size: 0.8em; /* 遅延情報だけは少し小さく残す */
+
+
+
+margin-left: 10px;
+
+
+
+font-weight: normal;
+
+
+
+}
+
+
+
+
+
+
+
+/* 停車駅表示エリアのスタイル（スクロールあり） */
+
+
+
+#stop-stations-display-area {
+
+
+
+font-size: 1.8em; /* メイン表示エリアのテキストと同じサイズに統一（変更なし） */
+
+
+
+height: 80px; /* ★修正: メイン表示エリアと同じ高さに固定 (例: 80px) */
+
+
+
+line-height: 1.6em; /* 文字の高さに合わせる */
+
+
+
+color: #0a0; /* 停車駅は少し暗めの緑 */
+
+
+
+overflow: hidden; /* はみ出た部分を隠す */
+
+
+
+white-space: nowrap; /* テキストが改行されないように */
+
+
+
+position: relative;
+
+
+
+border: 1px solid #333;
+
+
+
+border-radius: 4px;
+
+
+
+box-sizing: border-box;
+
+
+
+display: flex; /* 内容を垂直中央に配置するため */
+
+
+
+align-items: center; /* 内容を垂直中央に配置するため */
+
+
+
+padding-left: 10px; /* スクロール開始位置の調整（これも左寄せになる） */
+
+
+
+justify-content: flex-start; /* 停車駅のテキストも左寄せに */
+
+
+
+}
+
+
+
+
+
+
+
+/* スクロールするテキストのスタイル（停車駅のみに適用） */
+
+
+
+#stop-stations-display-area span {
+
+
+
+display: inline-block;
+
+
+
+position: absolute; /* 親要素に対して絶対配置 */
+
+
+
+left: 100%; /* 最初は右端に配置（スクロールの起点） */
+
+
+
+will-change: transform;
+
+
+
+animation: scrollText 8s linear infinite; /* 速度を調整してください */
+
+
+
+}
+
+
+
+
+
+
+
+/* スクロールアニメーションの定義 */
+
+
+
+@keyframes scrollText {
+
+
+
+0% { transform: translateX(0); }
+
+
+
+/* 例: 全体時間の約83% (20s / 24s) で移動を完了させる */
+
+
+
+88% { transform: translateX(-100%); } /* テキストが完全に左に移動した状態 */
+
+
+
+100% { transform: translateX(-100%); } /* 残りの17%の時間は移動せず停止（4秒間停止） */
+
+
+
+}
+
+
+
+
+
+
+
+/* スクロールするテキストのスタイル（停車駅のみに適用） */
+
+
+
+#stop-stations-display-area span {
+
+
+
+/* ...他のスタイル... */
+
+
+
+animation: scrollText 6s linear infinite; /* ★修正: アニメーションの時間を24秒に変更 */
+
+
+
+}
+
+
+
+
+
+
+
+/* メディアクエリ：小さい画面での調整 */
+
+
+
+@media (max-width: 600px) {
+
+
+
+.station-header {
+
+
+
+font-size: 1.4em;
+
+
+
+}
+
+
+
+/* 枠の高さも調整 */
+
+
+
+#main-display-area,
+
+
+
+#stop-stations-display-area {
+
+
+
+height: 60px; /* ★修正: 小さい画面での高さをさらに小さく (例: 60px) */
+
+
+
+}
+
+
+
+/* 各情報要素のスタイル - 小さい画面でも統一（変更なし） */
+
+
+
+.train-type,
+
+
+
+.train-time,
+
+
+
+.train-destination,
+
+
+
+#stop-stations-display-area { /* 停車駅もここで統一 */
+
+
+
+font-size: 1.8em; /* 文字サイズはそのまま維持 */
+
+
+
+}
+
+
+
+.train-type {
+
+
+
+font-size: 1.8em; /* 小さい画面での種別の文字サイズ（少し大きく） */
+
+
+
+margin-right: 2px; /* 小さい画面での右余白 */
+
+
+
+}
+
+
+
+.train-time {
+
+
+
+margin-right: 10px; /* 小さい画面での右余白 */
+
+
+
+}
+
+
+
+.train-destination {
+
+
+
+/* 特に調整なし、flex-grow:0 のためコンテンツに合わせる */
+
+
+
+}
+
+
+
+}
+
