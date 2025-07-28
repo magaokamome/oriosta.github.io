@@ -64,7 +64,7 @@ body {
     width: 100%;
     background-color: #000;
     border: 1px solid #333;
-    border-radius: 4px;
+    border-radius: 10px;
     padding: 10px; /* 全体のパディング */
     box-sizing: border-box;
 }
@@ -135,7 +135,7 @@ body {
     white-space: nowrap;
     position: relative;
     border: 1px solid #333;
-    border-radius: 4px;
+    border-radius: 10px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
