@@ -1,6 +1,74 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鹿児島本線ナビ（折尾駅）</title>
+<style>
+  body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: sans-serif;
+    /* 全体の背景色を設定したい場合はここに記述 */
+    /* background-color: #F0F0F0; */
+  }
+
+  .scrolling-area {
+    width: 80%;
+    max-width: 800px;
+    background-color: #d1efdd; /* 薄い赤色の背景 */
+    padding: 10px 0;
+    overflow: hidden;
+    border-radius: 30px;
+    
+    /* ここに下側の余白を追加 */
+    margin-bottom: 50px; /* 例えば50ピクセルの余白 */
+    /* margin-bottom: 3em; */ /* emなどの相対単位でも指定可能 */
+  }
+
+  .scrolling-text {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: scroll-left 8s linear infinite;
+    color: #00cc52; /* 濃い赤色の文字 */
+    font-size: 2.2em;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  @keyframes scroll-left {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(-100%, 0);
+    }
+  }
+
+  /* 余白が適用されていることを確認するためのダミーコンテンツ（任意） */
+  .dummy-content {
+      margin-top: 20px; /* ダミーコンテンツの上にも余白 */
+      padding: 20px;
+      border: 1px dashed #CCC;
+      text-align: center;
+      color: #666;
+  }
+</style>
+</head>
+<body>
+
+<div class="scrolling-area">
+  <div class="scrolling-text">
+    現在、鹿児島本線は上下線ともに通常通り運行しています
+  </div>
+</div>
+
+
+</body>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>折尾駅 電光掲示板</title>
     <link rel="stylesheet" href="style.css">
@@ -17,9 +85,6 @@
             <div id="stop-stations-display-area" class="scroll stop-stations-display">
                 <span>停車駅情報読み込み中...</span>
                 <div id="approaching-message-overlay" class="approaching-message-overlay">
-                </div>
-            </div>
-        </div>
     </div>
     <script src="script.js"></script>
 </body>
