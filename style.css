@@ -1,535 +1,217 @@
 /* 全体のリセットと基本設定 */
-
 body {
-
-margin: 0;
-
-padding: 20px;
-
-background-color: #f0f0f0;
-
-font-family: 'monospace', 'Meiryo', sans-serif; /* 基本フォント */
-
-display: flex;
-
-flex-direction: column; /* 要素を縦に並べる */
-
-justify-content: flex-start; /* 上から配置 */
-
-align-items: center; /* 中央寄せに戻す */
-
-min-height: 100vh;
-
-box-sizing: border-box; /* paddingを含めて高さを計算 */
-
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+    font-family: 'monospace', 'Meiryo', sans-serif; /* 基本フォント */
+    display: flex;
+    flex-direction: column; /* 要素を縦に並べる */
+    justify-content: flex-start; /* 上から配置 */
+    align-items: center; /* 中央寄せに戻す */
+    min-height: 100vh;
+    box-sizing: border-box; /* paddingを含めて高さを計算 */
 }
-
-
 
 /* 電光掲示板全体の枠のスタイル */
-
 .display-wrapper {
-
-width: 90%;
-
-max-width: 800px;
-
-border: 3px solid #333;
-
-border-radius: 8px;
-
-overflow: hidden;
-
-background-color: #000; /* 電光掲示板全体の背景色 */
-
-box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-
-margin-bottom: 20px; /* ページ下部との余白 */
-
-box-sizing: border-box;
-
+    width: 90%;
+    max-width: 800px;
+    border: 3px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #000; /* 電光掲示板全体の背景色 */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px; /* ページ下部との余白 */
+    box-sizing: border-box;
 }
-
-
 
 /* 駅名・路線名・方面表示のヘッダー */
-
 .station-header {
-
-background-color: #222;
-
-color: #fff;
-
-padding: 10px 0;
-
-margin: 0;
-
-font-size: 1.6em; /* この部分のサイズは維持 */
-
-text-align: center;
-
-border-bottom: 1px solid #444;
-
-letter-spacing: 0.05em;
-
+    background-color: #222;
+    color: #fff;
+    padding: 10px 0;
+    margin: 0;
+    font-size: 1.6em; /* この部分のサイズは維持 */
+    text-align: center;
+    border-bottom: 1px solid #444;
+    letter-spacing: 0.05em;
 }
-
-
 
 /* ヘッダーの英語表記（もしあれば。今回はJSONにデータがないので表示されません） */
-
 .station-header .english-direction {
-
-display: block;
-
-font-size: 0.6em;
-
-color: #aaa;
-
-margin-top: 2px;
-
+    display: block;
+    font-size: 0.6em;
+    color: #aaa;
+    margin-top: 2px;
 }
-
-
 
 /* メインの電光掲示板の表示コンテンツ（列車情報と停車駅情報）をまとめるコンテナ */
-
 .display-container {
-
-display: flex;
-
-flex-direction: column;
-
-gap: 5px; /* 各電光掲示板間のギャップ */
-
-padding: 10px; /* コンテナ全体のパディング */
-
-background-color: #000; /* コンテナの背景色 */
-
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* 各電光掲示板間のギャップ */
+    padding: 10px; /* コンテナ全体のパディング */
+    background-color: #000; /* コンテナの背景色 */
 }
-
-
 
 /* メイン表示エリア（列車情報） */
-
 #main-display-area {
-
-display: flex;
-
-flex-direction: column; /* 列車情報を縦に並べる */
-
-height: 80px; /* 元の値を維持 */
-
-overflow: hidden; /* はみ出た内容を隠す */
-
-justify-content: center; /* 内容を垂直中央に配置 */
-
-width: 100%;
-
-background-color: #000;
-
-border: 1px solid #333;
-
-border-radius: 4px;
-
-padding: 10px; /* 全体のパディング */
-
-box-sizing: border-box;
-
+    display: flex;
+    flex-direction: column; /* 列車情報を縦に並べる */
+    height: 80px; /* 元の値を維持 */
+    overflow: hidden; /* はみ出た内容を隠す */
+    justify-content: center; /* 内容を垂直中央に配置 */
+    width: 100%;
+    background-color: #000;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 10px; /* 全体のパディング */
+    box-sizing: border-box;
 }
-
-
 
 /* 各列車の行 */
-
 .train-row {
-
-display: flex; /* 行内の要素を横並びにする */
-
-align-items: center; /* 垂直方向中央寄せ */
-
-color: lime; /* 基本の文字色 */
-
-padding: 0; /* 上下パディングは要素の高さで調整 */
-
-justify-content: flex-start; /* 全ての要素を左寄せに */
-
-width: 100%;
-
+    display: flex; /* 行内の要素を横並びにする */
+    align-items: center; /* 垂直方向中央寄せ */
+    color: lime; /* 基本の文字色 */
+    padding: 0; /* 上下パディングは要素の高さで調整 */
+    justify-content: flex-start; /* 全ての要素を左寄せに */
+    width: 100%;
 }
-
-
 
 .train-row.no-trains {
-
-justify-content: center; /* 列車がない場合のメッセージは中央寄せ */
-
-font-size: 1.6em;
-
-color: #aaa;
-
+    justify-content: center; /* 列車がない場合のメッセージは中央寄せ */
+    font-size: 1.6em;
+    color: #aaa;
 }
-
-
 
 /* 各情報要素のスタイル */
-
 /* .train-type, .train-time, .train-destination の基本スタイルは維持しつつ、
-
-.train-type の色指定を削除し、専用クラスで制御します。 */
-
+   .train-type の色指定を削除し、専用クラスで制御します。 */
 .train-time,
-
 .train-destination {
-
-font-size: 1.8em; /* 文字サイズはそのまま維持 */
-
-font-weight: bold; /* 全て太字 */
-
-color: #0f0; /* 基本の色（明るい緑）に統一 */
-
+    font-size: 1.8em; /* 文字サイズはそのまま維持 */
+    font-weight: bold; /* 全て太字 */
+    color: #0f0; /* 基本の色（明るい緑）に統一 */
 }
-
-
 
 /* 列車種別の共通スタイル */
-
 .train-type {
-
-font-size: 1.8em; /* 文字サイズはそのまま維持 */
-
-font-weight: bold; /* 全て太字 */
-
-min-width: 4.5em; /* 幅を確保して位置を揃える */
-
-text-align: left; /* 左寄せ */
-
-margin-right: 15px; /* 右側に余白を追加して隣の要素と区切る */
-
-/* ここに直接色を指定せず、以下の専用クラスで制御します */
-
+    font-size: 1.8em; /* 文字サイズはそのまま維持 */
+    font-weight: bold; /* 全て太字 */
+    min-width: 4.5em; /* 幅を確保して位置を揃える */
+    text-align: left; /* 左寄せ */
+    margin-right: 15px; /* 右側に余白を追加して隣の要素と区切る */
+    /* ここに直接色を指定せず、以下の専用クラスで制御します */
 }
-
-
 
 /* ★列車種別の色分け（追加・修正）★ */
-
 .train-type.normal {
-
-color: #0f0; /* 普通：明るい緑 */
-
+    color: #0f0; /* 普通：明るい緑 */
 }
-
 .train-type.rapid {
-
-color: orange; /* 快速：オレンジ */
-
+    color: orange; /* 快速：オレンジ */
 }
-
 .train-type.limited-express {
-
-color: red; /* 特急：赤 */
-
+    color: red; /* 特急：赤 */
 }
-
 /* ★ここまで列車種別の色分け★ */
 
-
-
-.train-time {
-
-margin-right: 30px; /* ★修正: ここを30pxなど、より大きな値に増やして余白を確保★ */
-
-}
-
-
-
-.train-destination {
-
-flex-grow: 0; /* ★修正: flex-growを0に戻す★ */
-
-text-align: left; /* 左寄せ */
-
-}
-
-
-
 .train-delay { /* JSONにdelay情報がないので表示されませんが、スタイルは用意しておきます */
-
-color: orange;
-
-font-size: 0.8em; /* 遅延情報だけは少し小さく残す */
-
-margin-left: 10px;
-
-font-weight: normal;
-
+    color: orange;
+    font-size: 0.8em; /* 遅延情報だけは少し小さく残す */
+    margin-left: 10px;
+    font-weight: normal;
 }
-
-
 
 /* 停車駅表示エリアのスタイル（スクロールあり） */
-
 #stop-stations-display-area {
-
-font-size: 1.8em; /* メイン表示エリアのテキストと同じサイズに統一（変更なし） */
-
-height: 80px; /* 元の値を維持 */
-
-line-height: 1.6em; /* 文字の高さに合わせる */
-
-color: #0a0; /* 停車駅は少し暗めの緑 */
-
-overflow: hidden; /* はみ出た部分を隠す */
-
-white-space: nowrap; /* テキストが改行されないように */
-
-position: relative;
-
-border: 1px solid #333;
-
-border-radius: 4px;
-
-box-sizing: border-box;
-
-display: flex; /* 内容を垂直中央に配置するため */
-
-align-items: center; /* 内容を垂直中央に配置するため */
-
-padding-left: 10px; /* スクロール開始位置の調整（これも左寄せになる） */
-
-justify-content: flex-start; /* 停車駅のテキストも左寄せに */
-
+    font-size: 1.8em; /* メイン表示エリアのテキストと同じサイズに統一（変更なし） */
+    height: 80px; /* 元の値を維持 */
+    line-height: 1.6em; /* 文字の高さに合わせる */
+    color: #0a0; /* 停車駅は少し暗めの緑 */
+    overflow: hidden; /* はみ出た部分を隠す */
+    white-space: nowrap; /* テキストが改行されないように */
+    position: relative;
+    border: 1px solid #333;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex; /* 内容を垂直中央に配置するため */
+    align-items: center; /* 内容を垂直中央に配置するため */
+    padding-left: 10px; /* スクロール開始位置の調整（これも左寄せになる） */
+    justify-content: flex-start; /* 停車駅のテキストも左寄せに */
 }
-
-
 
 /* スクロールするテキストのスタイル（停車駅のみに適用） */
-
 #stop-stations-display-area span {
-
-display: inline-block;
-
-position: absolute; /* 親要素に対して絶対配置 */
-
-left: 100%; /* 最初は右端に配置（スクロールの起点） */
-
-will-change: transform;
-
-animation: scrollText 8s linear infinite; /* ★この行は元のまま、一切変更しない（お客様ご提示のコードを維持）★ */
-
+    display: inline-block;
+    position: absolute; /* 親要素に対して絶対配置 */
+    left: 100%; /* 最初は右端に配置（スクロールの起点） */
+    will-change: transform;
+    animation: scrollText 8s linear infinite; /* ★この行は元のまま、一切変更しない（お客様ご提示のコードを維持）★ */
 }
-
-
 
 /* スクロールアニメーションの定義 */
-
 @keyframes scrollText {
-
-0% { transform: translateX(0); }
-
-/* 例: 全体時間の約83% (20s / 24s) で移動を完了させる */
-
-88% { transform: translateX(-100%); } /* テキストが完全に左に移動した状態 */
-
-100% { transform: translateX(-100%); } /* 残りの17%の時間は移動せず停止（4秒間停止） */
-
+    0% { transform: translateX(0); }
+    /* 例: 全体時間の約83% (20s / 24s) で移動を完了させる */
+    88% { transform: translateX(-100%); } /* テキストが完全に左に移動した状態 */
+    100% { transform: translateX(-100%); } /* 残りの17%の時間は移動せず停止（4秒間停止） */
 }
-
-
 
 /* スクロールするテキストのスタイル（停車駅のみに適用） */
-
 #stop-stations-display-area span {
-
-/* ...他のスタイル... */
-
-animation: scrollText 6s linear infinite; /* ★この行も元のまま、一切変更しない（お客様ご提示のコードを維持）★ */
-
+    /* ...他のスタイル... */
+    animation: scrollText 6s linear infinite; /* ★この行も元のまま、一切変更しない（お客様ご提示のコードを維持）★ */
 }
-
-
 
 /* 特定の駅名を強調するための新しいスタイル */
-
 .highlighted-station {
-
-color: orange !important; /* !important を使うことで、他のスタイルより優先させます */
-
-font-weight: bold; /* 必要であれば太字に */
-
+    color: orange !important; /* !important を使うことで、他のスタイルより優先させます */
+    font-weight: bold; /* 必要であれば太字に */
 }
-
-
 
 /* メディアクエリ：小さい画面での調整 */
-
 @media (max-width: 600px) {
-
-body {
-
-padding: 10px;
-
-}
-
-.display-wrapper {
-
-width: 95%;
-
-padding: 10px; /* 全体のパディングを調整 */
-
-}
-
-.station-header {
-
-font-size: 1.4em;
-
-}
-
-
-
-/* 枠の高さも調整 */
-
-#main-display-area,
-
-#stop-stations-display-area {
-
-height: 60px; /* 小さい画面での高さを60pxに維持 */
-
-padding: 8px;
-
-}
-
-
-
-/* 各情報要素のスタイル - 小さい画面でも統一（変更なし） */
-
-.train-type,
-
-.train-time,
-
-.train-destination {
-
-font-size: 1.5em; /* 小さい画面での文字サイズ（メイン表示） */
-
-}
-
-
-
-#stop-stations-display-area { /* 停車駅もここで統一 */
-
-font-size: 1.3em; /* 小さい画面での停車駅の文字サイズ */
-
-}
-
-
-
-.train-type {
-
-font-size: 1.5em; /* 小さい画面での種別の文字サイズ（メイン表示と同じ） */
-
-margin-right: 2px; /* 小さい画面での右余白 */
-
-}
-
-
-
-.train-time {
-
-margin-right: 10px; /* 小さい画面での右余白 */
-
-}
-
-
-
-.train-destination {
-
-/* 特に調整なし、flex-grow:0 のためコンテンツに合わせる */
-
-}
-
-}
-
-
-
-/* style.css */
-
-
-
-/* （既存のCSSは変更せず、以下の新しいCSSを追加してください） */
-
-
-
-/* 点滅メッセージ全体を覆うコンテナ（停車駅表示エリア内に配置） */
-
-.blinking-overlay {
-
-position: absolute; /* 親要素(#stop-stations-display-area)に対して絶対配置 */
-
-top: 0;
-
-left: 0;
-
-width: 100%;
-
-height: 100%;
-
-display: flex; /* 中央寄せのため */
-
-justify-content: center; /* 水平中央寄せ */
-
-align-items: center; /* 垂直中央寄せ */
-
-background-color: transparent; /* 背景は透明。必要なら薄い黒などにも */
-
-z-index: 10; /* 通常の停車駅テキストの上に重ねる */
-
-pointer-events: none; /* 下の要素（スクロールテキスト）のイベントを邪魔しないように */
-
-opacity: 0; /* 最初は非表示 */
-
-transition: opacity 0.3s ease-in-out; /* フェードイン・アウトのアニメーション */
-
-}
-
-
-
-/* 点滅メッセージのテキスト自体 */
-
-.blinking-overlay .message-text {
-
-color: yellow; /* メッセージの色 */
-
-font-size: 1.5em; /* メッセージの文字サイズ */
-
-font-weight: bold;
-
-text-shadow: 0 0 5px rgba(255, 255, 0, 0.7); /* 少し光る効果 */
-
-}
-
-
-
-/* 点滅アニメーション適用時のスタイル */
-
-.blinking-overlay.show-blink {
-
-opacity: 1; /* 表示 */
-
-animation: blinkText 1s infinite alternate; /* 点滅アニメーション適用 */
-
-}
-
-
-
-/* 点滅アニメーションの定義 */
-
-@keyframes blinkText {
-
-0% { opacity: 1; }
-
-50% { opacity: 0; }
-
-100% { opacity: 1; }
-
+    body {
+        padding: 10px;
+    }
+    .display-wrapper {
+        width: 95%;
+        padding: 10px; /* 全体のパディングを調整 */
+    }
+    .station-header {
+        font-size: 1.4em;
+    }
+
+    /* 枠の高さも調整 */
+    #main-display-area,
+    #stop-stations-display-area {
+        height: 60px; /* 小さい画面での高さを60pxに維持 */
+        padding: 8px;
+    }
+
+    /* 各情報要素のスタイル - 小さい画面でも統一（変更なし） */
+    .train-type,
+    .train-time,
+    .train-destination {
+        font-size: 1.5em; /* 小さい画面での文字サイズ（メイン表示） */
+    }
+
+    #stop-stations-display-area { /* 停車駅もここで統一 */
+        font-size: 1.3em; /* 小さい画面での停車駅の文字サイズ */
+    }
+
+    .train-type {
+        font-size: 1.5em; /* 小さい画面での種別の文字サイズ（メイン表示と同じ） */
+        margin-right: 2px; /* 小さい画面での右余白 */
+    }
+
+    .train-time {
+        margin-right: 10px; /* 小さい画面での右余白 */
+    }
+
+    .train-destination {
+        /* 特に調整なし、flex-grow:0 のためコンテンツに合わせる */
+    }
 }
