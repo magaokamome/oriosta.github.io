@@ -86,8 +86,6 @@ body {
 }
 
 /* 各情報要素のスタイル */
-/* .train-type, .train-time, .train-destination の基本スタイルは維持しつつ、
-   .train-type の色指定を削除し、専用クラスで制御します。 */
 .train-time,
 .train-destination {
     font-size: 1.8em; /* 文字サイズはそのまま維持 */
@@ -102,10 +100,9 @@ body {
     min-width: 4.5em; /* 幅を確保して位置を揃える */
     text-align: left; /* 左寄せ */
     margin-right: 15px; /* 右側に余白を追加して隣の要素と区切る */
-    /* ここに直接色を指定せず、以下の専用クラスで制御します */
 }
 
-/* ★列車種別の色分け（追加・修正）★ */
+/* 列車種別の色分け */
 .train-type.normal {
     color: #0f0; /* 普通：明るい緑 */
 }
@@ -115,31 +112,35 @@ body {
 .train-type.limited-express {
     color: red; /* 特急：赤 */
 }
-/* ★ここまで列車種別の色分け★ */
 
-.train-delay { /* JSONにdelay情報がないので表示されませんが、スタイルは用意しておきます */
+/* 時刻と行き先の間の余白（前回の修正を維持） */
+.train-time {
+    margin-right: 30px;
+}
+
+.train-delay {
     color: orange;
-    font-size: 0.8em; /* 遅延情報だけは少し小さく残す */
+    font-size: 0.8em;
     margin-left: 10px;
     font-weight: normal;
 }
 
 /* 停車駅表示エリアのスタイル（スクロールあり） */
 #stop-stations-display-area {
-    font-size: 1.8em; /* メイン表示エリアのテキストと同じサイズに統一（変更なし） */
-    height: 80px; /* 元の値を維持 */
-    line-height: 1.6em; /* 文字の高さに合わせる */
-    color: #0a0; /* 停車駅は少し暗めの緑 */
-    overflow: hidden; /* はみ出た部分を隠す */
-    white-space: nowrap; /* テキストが改行されないように */
+    font-size: 1.8em;
+    height: 80px;
+    line-height: 1.6em;
+    color: #0a0;
+    overflow: hidden;
+    white-space: nowrap;
     position: relative;
     border: 1px solid #333;
     border-radius: 4px;
     box-sizing: border-box;
-    display: flex; /* 内容を垂直中央に配置するため */
-    align-items: center; /* 内容を垂直中央に配置するため */
-    padding-left: 10px; /* スクロール開始位置の調整（これも左寄せになる） */
-    justify-content: flex-start; /* 停車駅のテキストも左寄せに */
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    justify-content: flex-start;
 }
 
 /* スクロールするテキストのスタイル（停車駅のみに適用） */
@@ -148,27 +149,30 @@ body {
     position: absolute; /* 親要素に対して絶対配置 */
     left: 100%; /* 最初は右端に配置（スクロールの起点） */
     will-change: transform;
-    animation: scrollText 8s linear infinite; /* ★この行は元のまま、一切変更しない（お客様ご提示のコードを維持）★ */
+    /* アニメーション時間を少し長めにするか、元の8sを維持するかは試しながら調整 */
+    animation: scrollText 12s linear infinite; /* 例: 8sを12sに増やす */
 }
 
 /* スクロールアニメーションの定義 */
 @keyframes scrollText {
-    0% { transform: translateX(0); }
-    /* 例: 全体時間の約83% (20s / 24s) で移動を完了させる */
-    88% { transform: translateX(-100%); } /* テキストが完全に左に移動した状態 */
-    100% { transform: translateX(-100%); } /* 残りの17%の時間は移動せず停止（4秒間停止） */
-}
-
-/* スクロールするテキストのスタイル（停車駅のみに適用） */
-#stop-stations-display-area span {
-    /* ...他のスタイル... */
-    animation: scrollText 6s linear infinite; /* ★この行も元のまま、一切変更しない（お客様ご提示のコードを維持）★ */
+    0% { transform: translateX(0); } /* 初期位置: 画面の右端からスタート */
+    
+    /* 90%の時点でテキストが完全に画面外に出るように調整し、
+       残りの10%は停止期間として、画面外で待機する時間を設けます。
+       これにより、次のループが始まる前に完全にテキストが見えなくなります。
+       translateXの値は、現在の電光掲示板の幅(max-width: 800px)と
+       最も長いテキストの幅を合計した値よりも大きくします。
+       例えば、テキストが1000pxの長さであれば、800px + 1000px = 1800px
+       余裕を見て-2000pxから-2500px程度を試します。
+    */
+    100% { transform: translateX(-2500px); } /* ★残りの時間は停止★ */
+    /* -2000pxで足りなければ、-2500px, -3000pxと増やしてください。 */
 }
 
 /* 特定の駅名を強調するための新しいスタイル */
 .highlighted-station {
-    color: orange !important; /* !important を使うことで、他のスタイルより優先させます */
-    font-weight: bold; /* 必要であれば太字に */
+    color:transparent !important; /* 透明に設定 */
+    font-weight: bold;
 }
 
 /* メディアクエリ：小さい画面での調整 */
@@ -178,16 +182,16 @@ body {
     }
     .display-wrapper {
         width: 95%;
-        padding: 10px; /* 全体のパディングを調整 */
+        padding: 10px;
     }
     .station-header {
-        font-size: 1.4em;
+        font-size: 1.2em; /* 小さく調整したフォントサイズを維持 */
+        padding: 8px 0;
     }
-
     /* 枠の高さも調整 */
     #main-display-area,
     #stop-stations-display-area {
-        height: 60px; /* 小さい画面での高さを60pxに維持 */
+        height: 60px;
         padding: 8px;
     }
 
@@ -195,20 +199,20 @@ body {
     .train-type,
     .train-time,
     .train-destination {
-        font-size: 1.5em; /* 小さい画面での文字サイズ（メイン表示） */
+        font-size: 1.5em;
     }
 
-    #stop-stations-display-area { /* 停車駅もここで統一 */
-        font-size: 1.3em; /* 小さい画面での停車駅の文字サイズ */
+    #stop-stations-display-area {
+        font-size: 1.3em;
     }
 
     .train-type {
-        font-size: 1.5em; /* 小さい画面での種別の文字サイズ（メイン表示と同じ） */
-        margin-right: 2px; /* 小さい画面での右余白 */
+        font-size: 1.5em;
+        margin-right: 2px;
     }
 
     .train-time {
-        margin-right: 10px; /* 小さい画面での右余白 */
+        margin-right: 10px;
     }
 
     .train-destination {
