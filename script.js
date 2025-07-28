@@ -112,7 +112,7 @@ async function loadAndDisplayTimetable() {
         const response = await fetch(JSON_FILE_PATH);
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
+            throw new new Error(`HTTP error! status: ${response.status} - ${response.url}`);
         }
 
         const data = await response.json();
@@ -157,7 +157,7 @@ async function loadAndDisplayTimetable() {
         // (DOMContentLoadedイベントリスナー内の処理として移動することを想定)
         // もしこの関数がDOMContentLoaedからしか呼ばれないのであれば、以下のifは不要ですが、
         // setIntervalからも呼ばれるため、stopStationsSpanElementが未設定の場合のみ実行します。
-        if (!stopStationsSpanElement) {
+        if (!stopStationsSpanElement) { // stopStationsSpanElementが未設定の場合のみ実行
             let currentOriginalStopStationsHtml = '';
             let currentTrainTypeKey = '普通';
             let displayTrainType = '列車';
@@ -166,12 +166,17 @@ async function loadAndDisplayTimetable() {
                 const originalTrainType = firstUpcomingTrain.type;
                 displayTrainType = originalTrainType;
 
-                if (originalTrainType.includes('普通')) {
+                // 特急の種別を細かく判定する場合のロジック (JSONのキーに合わせる)
+                if (originalTrainType === '特急ソニック') {
+                    currentTrainTypeKey = '特急ソニック';
+                } else if (originalTrainType === '特急きらめき') {
+                    currentTrainTypeKey = '特急きらめき';
+                } else if (originalTrainType.includes('普通')) {
                     currentTrainTypeKey = '普通';
                 } else if (originalTrainType.includes('快速')) {
                     currentTrainTypeKey = '快速';
                 } else if (originalTrainType.includes('特急') || originalTrainType.includes('にちりんシーガイア')) {
-                    currentTrainTypeKey = '特急';
+                    currentTrainTypeKey = '特急'; // 汎用的な特急
                 } else {
                     currentTrainTypeKey = '普通';
                 }
@@ -185,7 +190,15 @@ async function loadAndDisplayTimetable() {
             if (stopStations && Array.isArray(stopStations) && stopStations.length > 0) {
                 const targetStationToHighlight = firstUpcomingTrain ? firstUpcomingTrain.destination : null;
 
-                const coloredStopStations = stopStations.map(station => {
+                // ★ここが前回の追加点: 停車駅リストから「小倉」を除外する
+                // 「小倉までの停車駅は、」というメッセージと重複を避けるため
+                const filteredStopStations = stopStations.filter(station => station !== '小倉');
+
+                // さらに、空文字列やnullなどの「空白」要素を最終的に除外するフィルターを追加
+                const cleanedStopStations = filteredStopStations.filter(station => station && station.trim() !== '');
+
+
+                const coloredStopStations = cleanedStopStations.map(station => { // 変更: cleanedStopStations を使用
                     if (targetStationToHighlight && station === targetStationToHighlight) {
                         return `<span class="highlighted-station">${station}</span>`;
                     }
