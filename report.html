@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>報告 - RaimuService Train</title>
+    <style>
+        /* 全体のリセットと基本設定 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f7; /* iOSの背景色に近い、非常に薄いグレー */
+            color: #1c1c1c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ヘッダーエリア - ミニマルで機能的、システムバーのような見た目 */
+        .header {
+            width: 100%;
+            max-width: 100%;
+            background-color: rgba(255, 255, 255, 0.85); /* 透明感を出すためのrgba */
+            border-bottom: 0.5px solid #dcdcdc;
+            padding: 16px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            color: #8e8e93;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-weight: 600;
+            color: #007aff;
+            font-size: 1.1em;
+            letter-spacing: -0.01em;
+        }
+        .header .logo a { /* ロゴのリンクスタイル */
+            text-decoration: none;
+            color: inherit;
+        }
+        .header .nav {
+            display: flex;
+            gap: 28px;
+            margin-right: auto;
+            margin-left: 60px;
+        }
+        .header .nav a {
+            text-decoration: none;
+            color: #007aff;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+        .header .nav a:hover {
+            color: #004d80;
+        }
+        .header .search-icon {
+            margin-left: 28px;
+            font-size: 1.1em;
+            cursor: pointer;
+            color: #007aff;
+        }
+
+        /* メインコンテンツエリア - コンテンツの主役化と十分な余白 */
+        .main-content {
+            width: 100%;
+            max-width: 760px; /* 報告ページ用に少し狭めに設定 */
+            padding: 60px 20px 80px; /* 上部もパディングをしっかり確保 */
+            box-sizing: border-box;
+            background-color: transparent;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* ページタイトルと説明 */
+        .page-title-section {
+            margin-bottom: 40px;
+        }
+        .page-title-section h1 {
+            font-size: 2.2em; /* トップページより少し小さめ */
+            font-weight: 700;
+            color: #1c1c1c;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+        .page-title-section p {
+            font-size: 1em;
+            color: #8e8e93;
+            line-height: 1.5;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* フォームのコンテナ */
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9em;
+            color: #6a6a6a;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group select,
+        .form-group textarea {
+            width: calc(100% - 24px); /* パディング分を考慮 */
+            padding: 12px;
+            border: 1px solid #d1d1d6;
+            border-radius: 8px; /* 角丸 */
+            font-size: 1em;
+            color: #1c1c1c;
+            background-color: #ffffff;
+            box-sizing: border-box; /* paddingを含めて幅を計算 */
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            -webkit-appearance: none; /* iOSでのデフォルトスタイルを無効化 */
+            appearance: none;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #007aff;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25); /* 青いフォーカスリング */
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical; /* 縦方向のみリサイズ可能 */
+        }
+
+        /* 送信ボタン ★ここを修正しました */
+        .submit-button {
+            width: auto; /* ★幅をautoにして、パディングでサイズを制御 */
+            min-width: 140px; /* ★最小幅を設定して小さすぎないように */
+            padding: 10px 20px; /* ★上下のパディングを減らして高さを小さく */
+            background-color: #007aff;
+            color: white;
+            border: none;
+            border-radius: 9999px; /* 完全なカプセル形状 */
+            font-size: 1em; /* ★フォントサイズを微調整 */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            -webkit-appearance: none;
+            appearance: none;
+            display: inline-block; /* 中央寄せのため */
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+        }
+        .submit-button:active {
+            background-color: #003a8c;
+        }
+
+        /* 注意書き */
+        .note {
+            margin-top: 30px; /* フォームからの適切な余白 */
+            font-size: 0.85em;
+            color: #c7c7cc;
+            text-align: center;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+            }
+            .header .logo {
+                font-size: 1.2em;
+            }
+            .header .nav {
+                display: none;
+            }
+            .main-content {
+                padding: 40px 15px 50px;
+            }
+            .page-title-section h1 {
+                font-size: 2em;
+            }
+            .page-title-section p {
+                font-size: 0.95em;
+            }
+            .form-container {
+                padding: 20px;
+            }
+            .form-group input[type="text"],
+            .form-group input[type="email"],
+            .form-group select,
+            .form-group textarea {
+                width: calc(100% - 20px); /* モバイルでのパディング調整 */
+                padding: 10px;
+            }
+            .submit-button {
+                padding: 10px 15px; /* ★モバイルでも調整 */
+                font-size: 0.95em; /* ★モバイルでも調整 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><a href="index.html"><b>RaimuService Train</b></a></div>
+        <div class="nav">
+            <a href="report.html"><b>報告</b></a>
+            <a href="news.html"><b>お知らせ</b></a>
+            <a href="profile.html"><b>プロフィール</b></a>
+        </div>
+        <div class="search-icon"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-title-section">
+            <h1>ご意見・ご報告</h1>
+            <p>サービス改善のため、ご意見や不具合などございましたら、以下のフォームよりお気軽にお知らせください。</p>
+        </div>
+
+        <div class="form-container">
+            <form action="#" method="post">
+                <div class="form-group">
+                    <label for="name">お名前 (任意)</label>
+                    <input type="text" id="name" name="name" placeholder="例: 山田 太郎">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">メールアドレス (任意)</label>
+                    <input type="email" id="email" name="email" placeholder="例: your.email@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="category">報告カテゴリ</label>
+                    <select id="category" name="category" required>
+                        <option value="">選択してください</option>
+                        <option value="bug">不具合報告</option>
+                        <option value="suggestion">改善提案</option>
+                        <option value="request">機能要望</option>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">内容 <span style="color: #c7c7cc;">(必須)</span></label>
+                    <textarea id="message" name="message" rows="6" placeholder="詳細をご記入ください。" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-button">送信する</button>
+            </form>
+        </div>
+
+        <p class="note">ご報告いただいた内容は、今後のサービス改善に役立てさせていただきます。</p>
+    </div>
+</body>
+</html>

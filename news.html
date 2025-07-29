@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お知らせ - RaimuService Train</title>
+    <style>
+        /* 全体のリセットと基本設定 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f7; /* iOSの背景色に近い、非常に薄いグレー */
+            color: #1c1c1c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ヘッダーエリア - ミニマルで機能的、システムバーのような見た目 */
+        .header {
+            width: 100%;
+            max-width: 100%;
+            background-color: rgba(255, 255, 255, 0.85); /* 透明感を出すためのrgba */
+            border-bottom: 0.5px solid #dcdcdc;
+            padding: 16px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            color: #8e8e93;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-weight: 600;
+            color: #007aff;
+            font-size: 1.1em;
+            letter-spacing: -0.01em;
+        }
+        .header .logo a { /* ロゴのリンクスタイル */
+            text-decoration: none;
+            color: inherit;
+        }
+        .header .nav {
+            display: flex;
+            gap: 28px;
+            margin-right: auto;
+            margin-left: 60px;
+        }
+        .header .nav a {
+            text-decoration: none;
+            color: #007aff;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+        .header .nav a:hover {
+            color: #004d80;
+        }
+        .header .search-icon {
+            margin-left: 28px;
+            font-size: 1.1em;
+            cursor: pointer;
+            color: #007aff;
+        }
+
+        /* メインコンテンツエリア */
+        .main-content {
+            width: 100%;
+            max-width: 980px; /* Newsroomに合わせた幅に拡張 */
+            padding: 40px 20px 80px;
+            box-sizing: border-box;
+            background-color: transparent;
+            margin-top: 20px;
+            text-align: center; /* 内部コンテンツは左寄せだが、このコンテナは中央 */
+        }
+
+        /* ページタイトルセクション */
+        .page-title-section {
+            text-align: left; /* タイトルは左寄せ */
+            margin-bottom: 30px;
+            padding: 0 0px; /* 左右のパディングをなくす */
+        }
+        .page-title-section h1 {
+            font-size: 2.8em; /* Newsroomのタイトルサイズに近づける */
+            font-weight: 700;
+            color: #1c1c1c;
+            margin-bottom: 8px;
+            letter-spacing: -0.03em;
+        }
+        .page-title-section p { /* Newsroomには通常ないが、今回は維持 */
+            font-size: 1em;
+            color: #8e8e93;
+            line-height: 1.5;
+        }
+
+        /* お知らせリストのコンテナ */
+        .news-grid-container {
+            display: grid; /* グリッドレイアウトに変更 */
+            gap: 20px; /* カード間の間隔 */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 応答性の高いグリッド */
+            justify-content: center;
+            padding: 0 0px; /* 左右のパディングをなくす */
+        }
+
+        /* 各お知らせカード (Newsroomスタイル) */
+        .news-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* 控えめな影 */
+            overflow: hidden; /* コンテンツが角丸からはみ出ないように */
+            text-align: left;
+            padding: 25px; /* カード内部のパディング */
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            /* transition: transform 0.2s ease, box-shadow 0.2s ease; */ /* ★アニメーション削除 */
+            cursor: pointer;
+            position: relative;
+        }
+        /* ★hoverとactive時のスタイルを削除 */
+        /* .news-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        .news-card:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        } */
+
+        .news-card .card-content {
+            flex-grow: 1;
+            padding-right: 40px; /* プラスボタンとの重なりを避ける */
+        }
+
+        .news-card .label {
+            font-size: 0.75em;
+            color: #8e8e93;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .news-card .title {
+            font-size: 1.25em;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            color: #1c1c1c;
+        }
+
+        .news-card .date {
+            font-size: 0.85em;
+            color: #8e8e93;
+        }
+
+        /* プラスボタンのスタイル */
+        .news-card .plus-button {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #f2f2f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #8e8e93;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.1s ease-out;
+            -webkit-tap-highlight-color: transparent;
+            z-index: 1;
+        }
+        .news-card .plus-button:hover {
+            background-color: #e5e5ea;
+        }
+        .news-card .plus-button:active {
+            background-color: #d1d1d6;
+        }
+
+        /* 注意書き */
+        .note {
+            margin-top: 60px;
+            font-size: 0.85em;
+            color: #c7c7cc;
+            text-align: center;
+        }
+
+        /* モーダルオーバーレイ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* 半透明の黒 */
+            backdrop-filter: blur(5px); /* 背景をぼかす */
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* ヘッダーよりも手前に */
+            opacity: 0; /* 初期状態で透明 */
+            visibility: hidden; /* 初期状態で非表示 */
+            transition: opacity 0.3s ease, visibility 0.3s ease; /* visibilityもアニメーションに追加 */
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* モーダルコンテンツ */
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* 強めの影 */
+            width: 90%;
+            max-width: 700px; /* Newsroomのモーダルに近い幅 */
+            max-height: 80vh; /* 画面高さを超えないように */
+            overflow-y: auto; /* 内容が長い場合にスクロール */
+            padding: 40px;
+            box-sizing: border-box;
+            position: relative;
+            transform: scale(0.95); /* 初期状態で少し縮小 */
+            opacity: 0; /* 初期状態で透明 */
+            transition: transform 0.3s ease 0.1s, opacity 0.3s ease 0.1s; /* 少し遅延させて滑らかに見せる */
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1); /* 開いた時に元のサイズに */
+            opacity: 1;
+            transition-delay: 0s; /* 開くときは遅延なし */
+        }
+        /* 閉じる時のアニメーション */
+        .modal-overlay:not(.active) .modal-content {
+             transform: scale(0.95);
+             opacity: 0;
+             transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+
+        /* モーダル内の閉じるボタン */
+        .modal-close-button {
+            position: absolute;
+            top: 15px; /* 上からの位置調整 */
+            right: 15px; /* 右からの位置調整 */
+            left: auto; /* 左位置をautoに */
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e5e5ea; /* iOSのモーダル閉じるボタンの背景色 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 500;
+            color: #1c1c1c; /* 黒いX */
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.1s ease-out;
+            -webkit-tap-highlight-color: transparent;
+            z-index: 10; /* コンテンツより手前に */
+        }
+        .modal-close-button:hover {
+            background-color: #d1d1d6;
+        }
+        .modal-close-button:active {
+            background-color: #c7c7cc;
+        }
+
+        /* モーダル内のコンテンツスタイル */
+        .modal-body .modal-label {
+            font-size: 0.8em;
+            color: #8e8e93;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .modal-body .modal-date {
+            font-size: 0.9em;
+            color: #8e8e93;
+            margin-bottom: 20px;
+        }
+        .modal-body .modal-title {
+            font-size: 2.2em; /* モーダル内のタイトルは大きめ */
+            font-weight: 700;
+            line-height: 1.3;
+            color: #1c1c1c;
+            margin-bottom: 25px;
+            letter-spacing: -0.02em;
+        }
+        .modal-body .modal-text p {
+            font-size: 1em;
+            color: #48484a;
+            line-height: 1.6;
+            margin-bottom: 1.2em; /* 段落間の余白 */
+        }
+        .modal-body .modal-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+            }
+            .header .logo {
+                font-size: 1.2em;
+            }
+            .header .nav {
+                display: none;
+            }
+            .main-content {
+                padding: 30px 15px 50px;
+                max-width: 100%;
+            }
+            .page-title-section {
+                padding: 0 0px;
+            }
+            .page-title-section h1 {
+                font-size: 2.2em;
+            }
+            .page-title-section p {
+                font-size: 0.95em;
+            }
+            .news-grid-container {
+                grid-template-columns: 1fr;
+                padding: 0 0px;
+            }
+            .news-card {
+                padding: 20px;
+            }
+            .news-card .title {
+                font-size: 1.15em;
+            }
+            .news-card .date {
+                font-size: 0.8em;
+            }
+            .news-card .plus-button {
+                bottom: 20px;
+                right: 20px;
+                width: 32px;
+                height: 32px;
+                font-size: 20px;
+            }
+
+            /* モーダルコンテンツのモバイル調整 */
+            .modal-content {
+                width: 95%; /* モバイルではさらに幅を広げる */
+                padding: 30px 20px;
+            }
+            .modal-body .modal-title {
+                font-size: 1.8em;
+            }
+            .modal-body .modal-text p {
+                font-size: 0.95em;
+            }
+            .modal-close-button {
+                top: 15px;
+                right: 15px; /* モバイルでも右上 */
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><a href="index.html"><b>RaimuService Train</b></a></div>
+        <div class="nav">
+            <a href="report.html"><b>報告</b></a>
+            <a href="news.html"><b>お知らせ</b></a>
+            <a href="profile.html"><b>プロフィール</b></a>
+        </div>
+        <div class="search-icon"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-title-section">
+            <h1>お知らせ</h1>
+            <p>RaimuService Trainからの最新情報や更新履歴をお知らせします。</p>
+        </div>
+
+        <div class="news-grid-container">
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="label">新着情報</span>
+                    <h2 class="title">鹿児島本線（折尾駅）運行情報ページを公開しました！</h2>
+                    <span class="date">2025年7月29日</span>
+                </div>
+                <button class="plus-button"
+                    data-label="新着情報"
+                    data-title="鹿児島本線（折尾駅）運行情報ページを公開しました！"
+                    data-date="2025年7月29日"
+                    data-detail="<p>この度、RaimuService Trainの最初の主要機能として、鹿児島本線折尾駅のリアルタイム運行情報ページを公開しました。実際の駅の電光掲示板をイメージしたデザインで、現在の列車の種別、発車時刻、行き先、そして停車駅情報が瞬時に確認できます。</p><p>これにより、駅構内や移動中でもスムーズに運行状況を把握できるようになります。今後も順次、対応路線や駅を拡大していく予定です。皆様のご利用を心よりお待ちしております。</p>">
+                    ＋
+                </button>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="label">アップデート</span>
+                    <h2 class="title">サイトのデザインを大幅にリニューアルしました</h2>
+                    <span class="date">2025年7月25日</span>
+                </div>
+                <button class="plus-button"
+                    data-label="アップデート"
+                    data-title="サイトのデザインを大幅にリニューアルしました"
+                    data-date="2025年7月25日"
+                    data-detail="<p>本日、RaimuService Trainのウェブサイト全体デザインを、よりミニマルで使いやすいものへと大幅に更新しました。視認性の向上と快適なユーザー体験を目指し、フォント、カラーパレット、レイアウトなど細部にわたって見直しを行っています。</p><p>特に、ヘッダーのすりガラス効果やフォーム要素の改善により、より直感的で美しいインターフェースが実現しました。今後も皆様にとって最適な情報提供プラットフォームであるよう、継続的に改善を行ってまいります。</p>">
+                    ＋
+                </button>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="label">ニュース</span>
+                    <h2 class="title">RaimuService Trainが始動しました</h2>
+                    <span class="date">2025年7月20日</span>
+                </div>
+                <button class="plus-button"
+                    data-label="ニュース"
+                    data-title="RaimuService Trainが始動しました"
+                    data-date="2025年7月20日"
+                    data-detail="<p>この度、鉄道運行情報サービス「RaimuService Train」が正式にサービスを開始いたしました。当サービスは、利用者の方々がよりスムーズに、より快適に鉄道を利用できるよう、リアルタイムの運行情報を提供することを目的としています。</p><p>まずは特定の路線からスタートしますが、今後、皆様からのフィードバックを元に、機能の拡充と対応エリアの拡大を図ってまいります。RaimuService Trainをどうぞよろしくお願いいたします。</p>">
+                    ＋
+                </button>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="label">お知らせ</span>
+                    <h2 class="title">定期メンテナンスのお知らせ</h2>
+                    <span class="date">2025年7月15日</span>
+                </div>
+                <button class="plus-button"
+                    data-label="お知らせ"
+                    data-title="定期メンテナンスのお知らせ"
+                    data-date="2025年7月15日"
+                    data-detail="<p>RaimuService Trainでは、より安定したサービス提供のため、以下の日程で定期メンテナンスを実施いたします。</p><p>日時：2025年7月22日 02:00〜04:00 (JST)<br>上記時間帯は、一時的にサービスが利用できなくなる可能性がございます。ご迷惑をおかけいたしますが、ご理解とご協力をお願い申し上げます。</p>">
+                    ＋
+                </button>
+            </div>
+
+            </div>
+    </div>
+
+    <div class="modal-overlay" id="newsModalOverlay">
+        <div class="modal-content">
+            <button class="modal-close-button" id="modalCloseButton">✕</button>
+            <div class="modal-body">
+                <span class="modal-label" id="modalLabel"></span>
+                <span class="modal-date" id="modalDate"></span>
+                <h1 class="modal-title" id="modalTitle"></h1>
+                <div class="modal-text" id="modalText"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const plusButtons = document.querySelectorAll('.plus-button');
+            const modalOverlay = document.getElementById('newsModalOverlay');
+            const modalCloseButton = document.getElementById('modalCloseButton');
+            const modalLabel = document.getElementById('modalLabel');
+            const modalDate = document.getElementById('modalDate');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalText = document.getElementById('modalText');
+            const body = document.body;
+
+            // 各プラスボタンにクリックイベントを追加
+            plusButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // ボタンのdata属性から情報を取得
+                    const label = button.dataset.label;
+                    const title = button.dataset.title;
+                    const date = button.dataset.date;
+                    const detail = button.dataset.detail;
+
+                    // モーダルにコンテンツを挿入
+                    modalLabel.textContent = label;
+                    modalDate.textContent = date;
+                    modalTitle.textContent = title;
+                    modalText.innerHTML = detail; // HTMLとして挿入
+
+                    // モーダルを表示
+                    modalOverlay.classList.add('active');
+                    body.style.overflow = 'hidden'; // 背景のスクロールを禁止
+                });
+            });
+
+            // モーダルを閉じる関数
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                // アニメーションのために少し遅延させてから visibility を hidden にする
+                setTimeout(() => {
+                    body.style.overflow = ''; // 背景のスクロールを許可
+                    // 必要であれば、モーダル内のコンテンツをクリアする
+                    modalLabel.textContent = '';
+                    modalDate.textContent = '';
+                    modalTitle.textContent = '';
+                    modalText.innerHTML = '';
+                }, 300); // CSSのトランジション時間と同じ
+            }
+
+            // 閉じるボタンにクリックイベントを追加
+            modalCloseButton.addEventListener('click', closeModal);
+
+            // モーダルオーバーレイの背景をクリックしたら閉じる
+            modalOverlay.addEventListener('click', (event) => {
+                // クリックされたのがオーバーレイ自体（モーダルコンテンツではない）場合
+                if (event.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            // ESCキーでモーダルを閉じる
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

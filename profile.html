@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロフィール - RaimuService Train</title>
+    <style>
+        /* 全体のリセットと基本設定 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f7; /* HIGの背景色に近い、非常に薄いグレー */
+            color: #1c1c1c; /* HIGの標準テキスト色 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ヘッダーエリア */
+        .header {
+            width: 100%;
+            max-width: 100%;
+            background-color: rgba(255, 255, 255, 0.85); /* 半透明の白 */
+            border-bottom: 0.5px solid #dcdcdc; /* 薄い下線 */
+            padding: 16px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            color: #8e8e93; /* サブテキスト色 */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* 控えめな影 */
+            backdrop-filter: blur(10px); /* すりガラス効果 */
+            -webkit-backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header .logo {
+            font-weight: 600;
+            color: #007aff; /* Apple Blue */
+            font-size: 1.1em;
+            letter-spacing: -0.01em;
+        }
+        .header .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .header .nav {
+            display: flex;
+            gap: 28px;
+            margin-right: auto;
+            margin-left: 60px;
+        }
+        .header .nav a {
+            text-decoration: none;
+            color: #007aff;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+        .header .nav a:hover {
+            color: #004d80;
+        }
+        .header .search-icon {
+            margin-left: 28px;
+            font-size: 1.1em;
+            cursor: pointer;
+            color: #007aff;
+        }
+
+        /* メインコンテンツエリア */
+        .main-content {
+            width: 100%;
+            max-width: 600px; /* iPhoneやiPadのコンテンツ幅を意識 */
+            background-color: #f2f2f7; /* 背景色 */
+            margin-top: 20px;
+            box-sizing: border-box;
+            padding: 0 15px; /* 左右に少しパディング */
+        }
+
+        /* プロフィールトップセクション */
+        .profile-top-section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 30px 20px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); /* 控えめな影 */
+        }
+
+        .profile-avatar-placeholder {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background-color: #007aff; /* Apple Blueの背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3em; /* イニシャルのサイズ */
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        .profile-name-title {
+            text-align: center;
+        }
+
+        .profile-name-title h1 {
+            font-size: 1.7em; /* 氏名 */
+            font-weight: 700;
+            margin: 0 0 5px 0;
+            color: #1c1c1c;
+            letter-spacing: -0.02em;
+        }
+
+        .profile-name-title p.title-text {
+            font-size: 1em; /* 肩書き */
+            color: #8e8e93;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        /* 情報セクションの基本スタイル */
+        .info-section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-section h2 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1c1c1c;
+            padding: 15px 20px 10px; /* セクションタイトルのパディング */
+            margin: 0;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info-list li {
+            padding: 12px 20px;
+            border-top: 0.5px solid #e5e5ea; /* 各項目の区切り線 */
+            color: #48484a;
+            font-size: 0.95em;
+            display: flex;
+            justify-content: space-between; /* ラベルと値を左右に */
+            align-items: center;
+            cursor: default; /* デフォルトのカーソル */
+            transition: background-color 0.1s ease;
+        }
+
+        .info-list li:first-child {
+            border-top: none; /* 最初の項目は上線なし */
+        }
+
+        .info-list li:active {
+            background-color: #e5e5ea; /* タップ時のフィードバック */
+        }
+
+        .info-list li .label {
+            font-weight: 500;
+            color: #1c1c1c;
+            flex-shrink: 0;
+            margin-right: 15px;
+        }
+
+        .info-list li .value {
+            flex-grow: 1;
+            text-align: right; /* 値は右寄せ */
+            color: #48484a; /* 標準のテキスト色 */
+        }
+
+        /* リンクやメールアドレスなどのアクション可能な値 */
+        .info-list li .value a {
+            color: #007aff; /* Apple Blue */
+            text-decoration: none;
+        }
+        .info-list li .value a:hover {
+            text-decoration: underline;
+        }
+
+        /* 特殊なアクション項目 (連絡先を共有など) */
+        .action-item {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* 中央揃え */
+            padding: 12px 20px;
+            border-top: 0.5px solid #e5e5ea;
+            color: #007aff; /* Apple Blue */
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .action-item:active {
+            background-color: #e5e5ea;
+        }
+        .action-item .icon {
+            width: 20px;
+            height: 20px;
+            fill: #007aff;
+            margin-right: 8px;
+        }
+
+        /* 注記セクション */
+        .profile-note {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 0.85em;
+            color: #8e8e93;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 20px; /* 下の余白 */
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+        .profile-note a {
+            color: #007aff;
+            text-decoration: none;
+        }
+        .profile-note a:hover {
+            text-decoration: underline;
+        }
+        .profile-note p {
+            margin: 0;
+        }
+        .profile-note p:first-of-type {
+            margin-bottom: 10px;
+            color: #48484a; /* 少し濃い色に */
+        }
+        .profile-note p:last-of-type {
+            color: #c7c7cc; /* より薄い色に */
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-top: 0;
+                padding: 0; /* 左右のパディングを削除 */
+            }
+            .profile-top-section,
+            .info-section,
+            .profile-note {
+                border-radius: 0; /* モバイルでは角丸なし */
+                box-shadow: none; /* モバイルでは影なし */
+            }
+
+            .profile-top-section {
+                padding: 25px 15px 15px;
+            }
+
+            .profile-avatar-placeholder {
+                width: 70px;
+                height: 70px;
+                font-size: 2.2em;
+                margin-bottom: 10px;
+            }
+
+            .profile-name-title h1 {
+                font-size: 1.4em;
+            }
+
+            .profile-name-title p.title-text {
+                font-size: 0.85em;
+            }
+
+            .info-section h2 {
+                padding: 12px 15px 8px;
+                font-size: 1em;
+            }
+
+            .info-list li {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+
+            .action-item {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+
+            .profile-note {
+                padding: 15px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><a href="index.html"><b>RaimuService Train</b></a></div>
+        <div class="nav">
+            <a href="report.html"><b>報告</b></a>
+            <a href="news.html"><b>お知らせ</b></a>
+            <a href="profile.html"><b>プロフィール</b></a>
+        </div>
+        <div class="search-icon"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="profile-top-section">
+            <div class="profile-avatar-placeholder">N</div> <div class="profile-name-title">
+                <h1>ねこ</h1>
+                <p class="title-text">ねこです。美味しいものが好きです。</p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>連絡先情報</h2>
+            <ul class="info-list">
+                <li>
+                    <span class="label">メール</span>
+                    <span class="value"><a href="mailto:toumeron.sub@gmail.com">toumeron.sub@gmail.com</a></span>
+                </li>
+                <li>
+                    <span class="label">HP</span>
+                    <span class="value"><a href="https://x.com/catnekoanimal">https://x.com/catnekoanimal</a></span>
+                </li>
+                 <li>
+                    <span class="label">活動名義</span>
+                    <span class="value">ねこ</span>
+                </li>
+            </ul>
+        </div>
+        <div class="profile-note">
+            <p>
+                上記を明記のうえ、<br>
+                <a href="mailto:toumeron.sub@gmail.com">toumeron.sub@gmail.com</a><br>
+                までご連絡ください。<br>
+            </p>
+            <p>
+                こちらのページを読まれていないと判断できるご連絡にはお返事いたしかねます。
+            </p>
+        </div>
+    </div>
+</body>
+</html>
