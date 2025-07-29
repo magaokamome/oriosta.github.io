@@ -19,6 +19,7 @@ const englishMappings = {
         "普通": "Local",
         "快速": "Rapid",
         "特急": "Limited Express",
+        "臨時": "Extra",
         // 以下は、もしjikokuhyo.jsonにこれらの具体的な種別名がある場合のために残しておきますが、
         // 現行ロジックでは「特急」に集約されているため、直接は使われないかもしれません。
         "特急ソニック": "Limited Express Sonic", 
@@ -37,6 +38,10 @@ const englishMappings = {
         "熊本": "Kumamoto",
         "鹿児島中央": "Kagoshima-Chuo",
         "下関": "Shimonoseki",
+        "宮崎空港": "Miyazaki Airport",
+        "折尾": "Orio",
+        "東京": "Tokyo",
+        "大阪": "Osaka",
         // 他の行き先があればここに追加
     }
 };
