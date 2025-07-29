@@ -1,15 +1,77 @@
 /* 全体のリセットと基本設定 */
 body {
-    margin: 0;
-    padding: 20px;
-    background-color: #f0f0f0;
+    margin: 0; /* ★ここを0にする */
+    padding: 0; /* ★ここを0にする */
+    background-color: #f2f2f7; /* メインページと背景色を合わせる */
     font-family: 'monospace', 'Meiryo', sans-serif; /* 基本フォント */
-    display: flex;
-    flex-direction: column; /* 要素を縦に並べる */
-    justify-content: flex-start; /* 上から配置 */
-    align-items: center; /* 中央寄せに戻す */
+    /* display: flex; /* ★削除 - ヘッダーが独立し、コンテンツは通常のフローで */
+    /* flex-direction: column; */
+    /* justify-content: flex-start; */
+    /* align-items: center; */
     min-height: 100vh;
-    box-sizing: border-box; /* paddingを含めて高さを計算 */
+    box-sizing: border-box;
+}
+
+/* ★追加: ヘッダー関連のスタイル（ホーム画面と全く同じ透明度と余白なし） */
+.header {
+    width: 100%; /* 全幅 */
+    max-width: 100%; /* これで横いっぱいに表示される */
+    background-color: rgba(255, 255, 255, 0.85); /* ホーム画面と同じ半透明の白 */
+    border-bottom: 0.5px solid #dcdcdc; /* ホーム画面と同じ境界線 */
+    padding: 16px 0; /* ★左右のパディングを0に */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    color: #8e8e93; /* ヘッダー全体の文字色はホーム画面と同じ色 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* ホーム画面と同じ影 */
+    backdrop-filter: blur(10px); /* ホーム画面と同じすりガラス効果 */
+    -webkit-backdrop-filter: blur(10px); /* Safari対応 */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header .logo {
+    font-weight: 600;
+    color: #007aff; /* ロゴの色をホーム画面と同じ青 */
+    font-size: 1.1em;
+    letter-spacing: -0.01em;
+    margin-left: 20px; /* ★左端からの余白をここで指定 */
+}
+.header .nav {
+    display: flex;
+    gap: 28px;
+    margin-right: auto;
+    margin-left: 60px; /* ロゴとナビの間の余白 */
+}
+.header .nav a {
+    text-decoration: none;
+    color: #007aff; /* ナビリンクの色をホーム画面と同じ青 */
+    font-weight: 400;
+    transition: color 0.2s ease;
+}
+.header .nav a:hover {
+    color: #004d80; /* ホバー時の色もホーム画面と同じに */
+}
+.header .search-icon {
+    margin-left: 28px; /* ナビと検索アイコンの間の余白 */
+    font-size: 1.1em;
+    cursor: pointer;
+    color: #007aff; /* 検索アイコンの色をホーム画面と同じ青 */
+    margin-right: 20px; /* ★右端からの余白をここで指定 */
+}
+
+/* ★追加: 電光掲示板全体を中央寄せにする新しいボックス */
+.content-container {
+    width: 100%; /* 親要素の幅を使う */
+    max-width: 1040px; /* ホーム画面のコンテンツと同じ最大幅 */
+    margin: 40px auto 80px; /* 上40px、左右中央寄せ、下80px */
+    padding: 0 20px; /* 左右の余白はコンテンツ側に残す */
+    box-sizing: border-box;
+    display: flex; /* 電光掲示板の要素を中央に配置するためにflexを使う */
+    flex-direction: column;
+    align-items: center; /* 中央寄せ */
 }
 
 /* 電光掲示板全体の枠のスタイル */
@@ -178,44 +240,56 @@ body {
 /* メディアクエリ：小さい画面での調整 */
 @media (max-width: 600px) {
     body {
-        padding: 10px;
+        padding: 0; /* ★ここも0に */
     }
+    .header {
+        padding: 12px 0; /* ★モバイルでも左右パディングを0に */
+    }
+    .header .logo {
+        font-size: 1.2em;
+        margin-left: 15px; /* ★モバイルでの左端からの余白 */
+    }
+    .header .nav {
+        display: none; /* モバイルでは非表示のまま */
+    }
+    .header .search-icon {
+        margin-left: auto;
+        margin-right: 15px; /* ★モバイルでの右端からの余白 */
+    }
+
+    .content-container {
+        margin-top: 30px; /* モバイルでの余白調整 */
+        margin-bottom: 50px;
+        padding: 0 15px; /* モバイルでの左右余白 */
+    }
+    
+    /* 電光掲示板のモバイルスタイル（元のまま） */
     .display-wrapper {
         width: 95%;
         padding: 10px;
     }
     .station-header {
-        font-size: 1.2em; /* 小さく調整したフォントサイズを維持 */
+        font-size: 1.2em;
         padding: 8px 0;
     }
-    /* 枠の高さも調整 */
     #main-display-area,
     #stop-stations-display-area {
         height: 60px;
         padding: 8px;
     }
-
-    /* 各情報要素のスタイル - 小さい画面でも統一（変更なし） */
     .train-type,
     .train-time,
     .train-destination {
         font-size: 1.5em;
     }
-
     #stop-stations-display-area {
         font-size: 1.3em;
     }
-
     .train-type {
         font-size: 1.5em;
         margin-right: 2px;
     }
-
     .train-time {
         margin-right: 10px;
-    }
-
-    .train-destination {
-        /* 特に調整なし、flex-grow:0 のためコンテンツに合わせる */
     }
 }
