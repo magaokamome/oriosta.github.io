@@ -150,7 +150,7 @@ body {
     left: 100%; /* 最初は右端に配置（スクロールの起点） */
     will-change: transform;
     /* アニメーション時間を少し長めにするか、元の8sを維持するかは試しながら調整 */
-    animation: scrollText 12s linear infinite; /* 例: 8sを12sに増やす */
+    animation: scrollText 8s linear infinite; /* 例: 8sを12sに増やす */
 }
 
 /* スクロールアニメーションの定義 */
