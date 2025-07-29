@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鉄道運行情報</title>
+    <style>
+        /* HIG準拠のフォントスタックと基本設定 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo; /* SF Pro優先、日本語フォント続く */
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f7; /* iOSの背景色に近い、非常に薄いグレー */
+            color: #1c1c1c; /* ダークモードでない場合の標準テキスト色 */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 中央寄せの親要素として機能 */
+            min-height: 100vh;
+            box-sizing: border-box;
+            line-height: 1.4; /* 行間を標準的に */
+            -webkit-font-smoothing: antialiased; /* フォントのアンチエイリアスを滑らかに */
+        }
+
+        /* ヘッダーエリア - ミニマルで機能的、システムバーのような見た目 */
+        .header {
+            width: 100%;
+            max-width: 100%;
+            background-color: rgba(255, 255, 255, 0.85); /* 透明感を出すためのrgba */
+            border-bottom: 0.5px solid #dcdcdc;
+            padding: 16px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between; /* ロゴとナビ、検索アイコンの間の均等配置 */
+            align-items: center;
+            font-size: 0.9em;
+            color: #8e8e93;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+            /* 透明感を出すための追加プロパティ */
+            backdrop-filter: blur(10px); /* すりガラス効果 */
+            -webkit-backdrop-filter: blur(10px); /* Safari対応 */
+            position: sticky; /* スクロールしてもヘッダーが追従するように */
+            top: 0; /* スクロール位置の上部に固定 */
+            z-index: 100; /* 他のコンテンツの上に表示 */
+        }
+        .header .logo {
+            font-weight: 600;
+            color: #007aff;
+            font-size: 1.1em;
+            letter-spacing: -0.01em;
+        }
+        .header .nav {
+            display: flex;
+            gap: 28px; /* ★個々のリンク間の間隔 */
+            margin-right: auto; /* ★左寄せにするため、右側のマージンを自動で設定 */
+            margin-left: 60px; /* ★ロゴとナビ間の左側余白。この値を調整して中央寄りを調整 */
+            /* justify-content: space-around; /* 削除 */
+            /* width: 300px; /* 削除 */
+        }
+        .header .nav a {
+            text-decoration: none;
+            color: #007aff;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+        .header .nav a:hover {
+            color: #004d80;
+        }
+        .header .search-icon {
+            margin-left: 28px; /* 検索アイコンとナビ間の余白 */
+            font-size: 1.1em;
+            cursor: pointer;
+            color: #007aff;
+        }
+
+        /* 駅のヘッダー画像セクション (全幅表示) */
+        .station-hero-image {
+            width: 100%; /* 全幅表示 */
+            height: 350px; /* 画像の高さ。好みで調整 */
+            margin-top: 0; /* ヘッダーのすぐ下に */
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* 画像にも影をつける */
+        }
+
+        .station-hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        /* メインコンテンツエリア - コンテンツの主役化と十分な余白 */
+        .main-content {
+            width: 100%;
+            max-width: 1040px; /* 最大幅は維持し、コンテンツを中央に寄せる */
+            padding: 40px 20px 80px; /* 上部もパディングをしっかり確保 */
+            box-sizing: border-box;
+            background-color: transparent; /* 背景色なし */
+            margin-top: 40px; /* 画像からの適切な余白 */
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        /* ページタイトルと説明 - 明瞭性と視覚的階層 */
+        .page-title-section {
+            margin-bottom: 50px;
+            padding: 0;
+        }
+        .page-title-section h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: #1c1c1c;
+            margin-bottom: 12px;
+            letter-spacing: -0.03em;
+        }
+        .page-title-section p {
+            font-size: 1.15em;
+            color: #8e8e93;
+            line-height: 1.4;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* 電光掲示板リストのレイアウト - 整然としたグリッドと余白 */
+        .board-list {
+            display: grid;
+            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            justify-content: center;
+            padding: 0;
+        }
+
+        /* 各電光掲示板アイテムのスタイル - HIG準拠のカードUI */
+        .board-item {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .board-item:hover {
+            /* アニメーションなし */
+        }
+        .board-item h2 {
+            color: #1c1c1c;
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .board-item p {
+            color: #8e8e93;
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+        .board-item a {
+            display: inline-block;
+            background-color: #007aff;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1em;
+            transition: background-color 0.2s ease;
+        }
+        .board-item a:hover {
+            background-color: #0056b3;
+        }
+
+        /* フッターの注意書き - 控えめな表示 */
+        .note {
+            margin-top: 60px;
+            font-size: 0.85em;
+            color: #c7c7cc;
+            text-align: center;
+            padding: 0;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+            }
+            .header .logo {
+                font-size: 1.2em;
+            }
+            .header .nav {
+                display: none; /* モバイルでは非表示のまま */
+            }
+            .header .search-icon {
+                margin-left: auto;
+            }
+            .station-hero-image {
+                height: 180px; /* モバイルでの高さ調整 */
+            }
+            .main-content {
+                padding: 30px 15px 50px; /* モバイルのパディング調整 */
+                margin-top: 30px; /* 画像からの余白 */
+            }
+            .page-title-section h1 {
+                font-size: 2.2em;
+                letter-spacing: normal;
+            }
+            .page-title-section p {
+                font-size: 1em;
+            }
+            .board-list {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .board-item {
+                padding: 25px;
+            }
+            .board-item h2 {
+                font-size: 1.6em;
+            }
+            .board-item p {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><b>RaimuService Train</b></div>
+                <div class="nav">
+            <a href="#"><b>報告</b></a>
+            <a href="#"><b>お知らせ</b></a>
+            <a href="#"><b>プロフィール</b></a>
+        </div>
+    </div>
+
+    <div class="station-hero-image">
+        <img src="https://pbs.twimg.com/media/GxBqiFcbUAE5gjf?format=jpg&name=4096x4096" alt="折尾駅の風景">
+    </div>
+    <div class="main-content">
+        <div class="page-title-section">
+            <h1>折尾駅の運行情報</h1>
+            <p>ご覧になりたい方面のリアルタイム運行情報を選択してください。実際の駅にある案内表示板に近い形で列車の運行状況を表示します。</p>
+        </div>
+
+        <div class="board-list">
+            <div class="board-item">
+                <h2>鹿児島本線 門司港方面</h2>
+                <p>鹿児島本線（上り）の電光掲示板です。列車の種別、発車時刻、行き先、停車駅情報が表示されます。</p>
+                <a href="orio_mojiko.html">情報を表示</a>
+            </div>
+
+            <div class="board-item">
+                <h2>鹿児島本線 博多方面</h2>
+                <p>鹿児島本線（下り）の電光掲示板風の運行情報は2026年頃に提供予定です</p>
+                <a href="orio-hakata/index.html">開発中...</a>
+            </div>
+
+            </div>
+
+        <p class="note">※このサイトはデモンストレーション用であり、実際の運行情報ではありません。運行情報は更新タイミングによって実際の状況と異なる場合があります。</p>
+    </div>
+</body>
+</html>
